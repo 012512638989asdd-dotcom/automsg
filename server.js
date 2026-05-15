@@ -117,7 +117,7 @@ app.use(session({
   cookie: {
     secure: true,
     httpOnly: true,
-    sameSite: 'none',
+    sameSite: 'lax',
     maxAge: 7 * 24 * 60 * 60 * 1000
   }
 }));
@@ -193,8 +193,7 @@ app.use((err, req, res, next) => {
 
   res.status(500).json({
     error: true,
-    message: err.message,
-    stack: err.stack
+    message: err.message
   });
 });
 
