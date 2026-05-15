@@ -2,6 +2,7 @@ require('dotenv').config();
 
 const express = require('express');
 const session = require('express-session');
+const pgSession = require('connect-pg-simple')(session);
 const cors = require('cors');
 const path = require('path');
 const { Pool } = require('pg');
@@ -110,10 +111,16 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
 app.use(session({
+  store: new pgSession({
+    pool: db,
+    tableName: 'user_sessions'
+  }),
+
   secret: process.env.SESSION_SECRET || 'change-this-secret',
+
   resave: false,
   saveUninitialized: false,
-  proxy: true,
+
   cookie: {
     secure: true,
     httpOnly: true,
@@ -193,7 +200,8 @@ app.use((err, req, res, next) => {
 
   res.status(500).json({
     error: true,
-    message: err.message
+    message: err.message,
+    stack: err.stack
   });
 });
 
