@@ -1,0 +1,492 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>الإدارة — automsg</title>
+  <link rel="stylesheet" href="/css/style.css">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='22' fill='%231a56ff'/><text y='.9em' font-size='70' x='15' fill='white' font-weight='bold'>A</text></svg>">
+</head>
+<body>
+<div class="app">
+
+  <aside class="sidebar" id="sidebar">
+    <div class="sidebar-logo">
+      <svg viewBox="0 0 36 36" width="32" height="32" fill="none">
+        <path d="M5 27 L18 5 L31 27" stroke="#1a56ff" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"/>
+        <path d="M10 20 L26 20" stroke="#1a56ff" stroke-width="2.8" stroke-linecap="round"/>
+        <circle cx="27" cy="26" r="6" fill="#0c1021" stroke="#1a56ff" stroke-width="2"/>
+        <circle cx="24.8" cy="26" r=".9" fill="#3b82f6"/>
+        <circle cx="27" cy="26" r=".9" fill="#3b82f6"/>
+        <circle cx="29.2" cy="26" r=".9" fill="#3b82f6"/>
+      </svg>
+    </div>
+    <nav class="sidebar-nav">
+      <a href="/dashboard" class="nav-item" data-page="dashboard" title="لوحة التحكم">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>
+        <span class="nav-tooltip">لوحة التحكم</span>
+      </a>
+      <a href="/tokens" class="nav-item" data-page="tokens" title="التوكنات">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 2l-2 2m-7.61 7.61a5.5 5.5 0 1 1-7.778 7.778 5.5 5.5 0 0 1 7.777-7.777zm0 0L15.5 7.5m0 0l3 3L22 7l-3-3m-3.5 3.5L19 4"/></svg>
+        <span class="nav-tooltip">التوكنات</span>
+      </a>
+      <a href="/tasks" class="nav-item" data-page="tasks" title="المهام">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
+        <span class="nav-tooltip">المهام</span>
+      </a>
+      <a href="/logs" class="nav-item" data-page="logs" title="السجلات">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg>
+        <span class="nav-tooltip">السجلات</span>
+      </a>
+      <a href="/profile" class="nav-item" data-page="profile" title="الملف الشخصي">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+        <span class="nav-tooltip">الملف الشخصي</span>
+      </a>
+      <a href="/admin" class="nav-item" data-page="admin" title="الإدارة">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+        <span class="nav-tooltip">الإدارة</span>
+      </a>
+    </nav>
+    <div class="sidebar-bottom">
+      <button onclick="logout()" class="nav-item" title="تسجيل الخروج" style="background:none;border:none;cursor:pointer;width:46px;height:46px;">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
+        <span class="nav-tooltip">تسجيل الخروج</span>
+      </button>
+    </div>
+  </aside>
+  <div class="overlay" id="overlay"></div>
+
+  <div class="main">
+    <header class="topbar">
+      <button class="hamburger" id="hamburger">☰</button>
+      <a href="/dashboard" class="topbar-brand">
+        <svg viewBox="0 0 28 28" width="26" height="26" fill="none">
+          <path d="M4 22 L14 4 L24 22" stroke="#1a56ff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+          <path d="M8 16 L20 16" stroke="#1a56ff" stroke-width="2.5" stroke-linecap="round"/>
+          <circle cx="21" cy="21" r="5" fill="#0c1021" stroke="#1a56ff" stroke-width="1.8"/>
+          <circle cx="19.2" cy="21" r=".75" fill="#3b82f6"/>
+          <circle cx="21" cy="21" r=".75" fill="#3b82f6"/>
+          <circle cx="22.8" cy="21" r=".75" fill="#3b82f6"/>
+        </svg>
+        <span class="brand-name">auto<span>msg</span></span>
+      </a>
+      <div class="topbar-actions">
+        <div class="avatar-topbar" id="topbarAvatar">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+        </div>
+      </div>
+    </header>
+
+    <div class="content">
+      <div class="page-header">
+        <h1 class="page-title">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="24" height="24" style="vertical-align:middle;margin-left:8px"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+          لوحة الإدارة
+        </h1>
+        <p class="page-sub">إدارة جميع الحسابات والمهام والإشعارات</p>
+      </div>
+
+      <!-- Admin Stats -->
+      <div class="mini-stats" id="adminStats">
+        <div class="mini-stat"><div class="mini-stat-info"><div class="mini-stat-value" id="as-users">—</div><div class="mini-stat-label">إجمالي المستخدمين</div></div></div>
+        <div class="mini-stat"><div class="mini-stat-info"><div class="mini-stat-value" id="as-tasks">—</div><div class="mini-stat-label">إجمالي المهام</div></div></div>
+        <div class="mini-stat"><div class="mini-stat-info"><div class="mini-stat-value" id="as-tokens">—</div><div class="mini-stat-label">إجمالي التوكنات</div></div></div>
+        <div class="mini-stat"><div class="mini-stat-info"><div class="mini-stat-value" id="as-sent">—</div><div class="mini-stat-label">رسائل مُرسلة</div></div></div>
+      </div>
+
+      <!-- Tabs -->
+      <div class="admin-tabs">
+        <button class="admin-tab active" onclick="switchTab('users',this)">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="16" height="16"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+          المستخدمون
+        </button>
+        <button class="admin-tab" onclick="switchTab('notifications',this)">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="16" height="16"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
+          الإشعارات
+        </button>
+      </div>
+
+      <!-- Users Tab -->
+      <div id="tab-users" class="tab-panel">
+        <div class="card">
+          <div class="card-header">
+            <h2>قائمة المستخدمين</h2>
+            <button class="btn btn-secondary btn-sm" onclick="loadUsers()">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="14" height="14"><polyline points="23 4 23 10 17 10"/><polyline points="1 20 1 14 7 14"/><path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"/></svg>
+              تحديث
+            </button>
+          </div>
+          <div class="table-wrap">
+            <table>
+              <thead>
+                <tr>
+                  <th>المستخدم</th>
+                  <th>الصلاحية</th>
+                  <th>التوكنات</th>
+                  <th>المهام</th>
+                  <th>المُرسل</th>
+                  <th>تاريخ الإنشاء</th>
+                  <th>الإجراءات</th>
+                </tr>
+              </thead>
+              <tbody id="usersTable">
+                <tr><td colspan="7"><div class="empty"><div class="spinner"></div></div></td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <!-- Notifications Tab -->
+      <div id="tab-notifications" class="tab-panel" style="display:none">
+        <div class="card">
+          <div class="card-header"><h2>إرسال إشعار للجميع</h2></div>
+          <div class="card-body">
+            <div style="display:flex;gap:1rem;align-items:flex-end;flex-wrap:wrap">
+              <div class="form-group" style="flex:1;min-width:240px">
+                <label class="form-label">نص الإشعار</label>
+                <textarea id="notifMsg" class="form-input" rows="3" placeholder="اكتب الإشعار هنا..." style="resize:vertical"></textarea>
+              </div>
+              <button class="btn btn-primary" onclick="sendNotification()" style="height:42px">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="16" height="16" style="margin-left:6px"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
+                إرسال للجميع
+              </button>
+            </div>
+          </div>
+        </div>
+        <div class="card" style="margin-top:1rem">
+          <div class="card-header">
+            <h2>الإشعارات المُرسلة</h2>
+            <button class="btn btn-secondary btn-sm" onclick="loadSentNotifications()">تحديث</button>
+          </div>
+          <div id="sentNotifList">
+            <div class="empty"><div class="spinner"></div></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- User Detail Modal -->
+<div class="dialog-overlay" id="userModal" style="display:none" onclick="closeModal(event)">
+  <div class="dialog dialog-lg" onclick="event.stopPropagation()">
+    <div class="dialog-header">
+      <h3 id="modalTitle">تفاصيل المستخدم</h3>
+      <button class="dialog-close" onclick="document.getElementById('userModal').style.display='none'">✕</button>
+    </div>
+    <div class="modal-tabs">
+      <button class="modal-tab active" onclick="switchModalTab('info',this)">معلومات</button>
+      <button class="modal-tab" onclick="switchModalTab('tasks',this)">المهام</button>
+      <button class="modal-tab" onclick="switchModalTab('tokens',this)">التوكنات</button>
+      <button class="modal-tab" onclick="switchModalTab('pwd',this)">تغيير الباسورد</button>
+    </div>
+    <div id="modal-info" class="modal-panel">
+      <div id="userInfoContent" style="padding:1rem 0"></div>
+    </div>
+    <div id="modal-tasks" class="modal-panel" style="display:none">
+      <div id="userTasksContent"></div>
+    </div>
+    <div id="modal-tokens" class="modal-panel" style="display:none">
+      <div id="userTokensContent"></div>
+    </div>
+    <div id="modal-pwd" class="modal-panel" style="display:none">
+      <div style="padding:1rem 0;max-width:360px">
+        <div class="form-group">
+          <label class="form-label">كلمة المرور الجديدة</label>
+          <input type="password" id="adminNewPwd" class="form-input" placeholder="6 أحرف على الأقل">
+        </div>
+        <button class="btn btn-primary" style="margin-top:.75rem" onclick="adminChangePwd()">تغيير كلمة المرور</button>
+      </div>
+    </div>
+    <div class="dialog-actions" style="justify-content:space-between">
+      <button class="btn btn-danger" onclick="deleteUser()">حذف الحساب</button>
+      <button class="btn btn-secondary" onclick="toggleAdminRole()">
+        <span id="toggleAdminText">تغيير الصلاحية</span>
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- Task Edit Modal -->
+<div class="dialog-overlay" id="taskEditModal" style="display:none" onclick="closeTaskModal(event)">
+  <div class="dialog" onclick="event.stopPropagation()">
+    <div class="dialog-header">
+      <h3>تعديل المهمة</h3>
+      <button class="dialog-close" onclick="document.getElementById('taskEditModal').style.display='none'">✕</button>
+    </div>
+    <div style="padding:.5rem 0;display:grid;gap:.75rem">
+      <div class="form-group">
+        <label class="form-label">معرف القناة</label>
+        <input type="text" id="editChannelId" class="form-input form-input-sm">
+      </div>
+      <div class="form-group">
+        <label class="form-label">الرسالة</label>
+        <textarea id="editMessage" class="form-input" rows="3" style="resize:vertical"></textarea>
+      </div>
+      <div class="form-group">
+        <label class="form-label">الفاصل الزمني (ثانية)</label>
+        <input type="number" id="editInterval" class="form-input form-input-sm" min="30">
+      </div>
+    </div>
+    <div class="dialog-actions">
+      <button class="btn btn-secondary" onclick="document.getElementById('taskEditModal').style.display='none'">إلغاء</button>
+      <button class="btn btn-primary" onclick="saveTaskEdit()">حفظ التعديلات</button>
+    </div>
+  </div>
+</div>
+
+<script src="/js/app.js"></script>
+<script>
+let currentUserId = null;
+let currentTaskId = null;
+let currentUserIsAdmin = false;
+
+(async () => {
+  const me = await authGuard();
+  if (!me) return;
+  if (!me.isAdmin) { location.href = '/dashboard'; return; }
+  initSidebar('admin');
+  await loadStats();
+  await loadUsers();
+  await loadSentNotifications();
+})();
+
+async function loadStats() {
+  try {
+    const s = await api.get('/api/admin/stats');
+    document.getElementById('as-users').textContent  = s.totalUsers;
+    document.getElementById('as-tasks').textContent  = s.totalTasks;
+    document.getElementById('as-tokens').textContent = s.totalTokens;
+    document.getElementById('as-sent').textContent   = s.totalSent.toLocaleString('ar');
+  } catch(e) {}
+}
+
+async function loadUsers() {
+  const tbody = document.getElementById('usersTable');
+  tbody.innerHTML = '<tr><td colspan="7"><div class="empty"><div class="spinner"></div></div></td></tr>';
+  try {
+    const users = await api.get('/api/admin/users');
+    if (!users.length) {
+      tbody.innerHTML = '<tr><td colspan="7"><div class="empty"><p>لا يوجد مستخدمون</p></div></td></tr>';
+      return;
+    }
+    tbody.innerHTML = users.map(u => `
+      <tr>
+        <td>
+          <div style="display:flex;align-items:center;gap:.6rem">
+            <div class="avatar-sm">${u.avatarPath ? `<img src="${u.avatarPath}" style="width:100%;height:100%;object-fit:cover;border-radius:50%">` : u.username.charAt(0).toUpperCase()}</div>
+            <span class="mono">${u.username}</span>
+          </div>
+        </td>
+        <td>${u.isAdmin ? '<span class="badge" style="background:rgba(245,158,11,.15);color:#f59e0b;border-color:rgba(245,158,11,.3)"><span class="badge-dot" style="background:#f59e0b"></span>مشرف</span>' : '<span class="badge badge-success"><span class="badge-dot"></span>مستخدم</span>'}</td>
+        <td><span class="mono">${u.tokenCount}</span></td>
+        <td><span class="mono">${u.taskCount}</span> <span style="color:var(--text3);font-size:.75rem">(${u.activeTasks} نشط)</span></td>
+        <td class="mono">${u.totalSent.toLocaleString('ar')}</td>
+        <td style="color:var(--text3)">${fmtDate(u.createdAt)}</td>
+        <td>
+          <button class="btn btn-secondary btn-sm" onclick="openUserModal(${u.id},'${u.username}',${u.isAdmin})">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="13" height="13"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
+            إدارة
+          </button>
+        </td>
+      </tr>`).join('');
+  } catch(e) { toasts.error('فشل تحميل المستخدمين'); }
+}
+
+function openUserModal(userId, username, isAdmin) {
+  currentUserId = userId;
+  currentUserIsAdmin = isAdmin;
+  document.getElementById('modalTitle').textContent = `إدارة: ${username}`;
+  document.getElementById('toggleAdminText').textContent = isAdmin ? 'إلغاء صلاحية المشرف' : 'منح صلاحية المشرف';
+  switchModalTab('info', document.querySelector('.modal-tab'));
+  loadUserInfo(userId);
+  document.getElementById('userModal').style.display = 'flex';
+}
+
+async function loadUserInfo(id) {
+  try {
+    const u = await api.get(`/api/admin/users/${id}`);
+    document.getElementById('userInfoContent').innerHTML = `
+      <div class="info-row"><span class="info-label">اسم المستخدم</span><span class="info-val mono">${u.username}</span></div>
+      <div class="info-row"><span class="info-label">الصلاحية</span><span class="info-val">${u.isAdmin ? 'مشرف' : 'مستخدم'}</span></div>
+      <div class="info-row"><span class="info-label">تاريخ الإنشاء</span><span class="info-val">${fmtDate(u.createdAt)}</span></div>`;
+  } catch(e) { toasts.error('فشل تحميل البيانات'); }
+}
+
+async function loadUserTasks(id) {
+  const el = document.getElementById('userTasksContent');
+  el.innerHTML = '<div class="empty"><div class="spinner"></div></div>';
+  try {
+    const tasks = await api.get(`/api/admin/users/${id}/tasks`);
+    if (!tasks.length) { el.innerHTML = '<div class="empty"><p>لا توجد مهام</p></div>'; return; }
+    el.innerHTML = `<div class="table-wrap"><table>
+      <thead><tr><th>القناة</th><th>الرسالة</th><th>الحالة</th><th>المُرسل</th><th>الفاصل</th><th>الإجراءات</th></tr></thead>
+      <tbody>${tasks.map(t => `
+        <tr>
+          <td class="mono">${t.channelId}</td>
+          <td style="max-width:180px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${t.message}</td>
+          <td><span class="badge badge-${t.isActive ? 'success' : 'failed'}"><span class="badge-dot"></span>${t.isActive ? 'نشط' : 'متوقف'}</span></td>
+          <td class="mono">${t.sentCount}</td>
+          <td>${fmtInterval(t.intervalSeconds)}</td>
+          <td style="display:flex;gap:.4rem">
+            <button class="btn btn-secondary btn-sm" onclick="openTaskEdit(${t.id},'${t.channelId.replace(/'/g,"\\'")}',\`${t.message.replace(/`/g,'\\`')}\`,${t.intervalSeconds})">تعديل</button>
+            <button class="btn btn-secondary btn-sm" onclick="adminToggleTask(${t.id},this)">${t.isActive ? 'إيقاف' : 'تشغيل'}</button>
+            <button class="btn btn-danger btn-sm" onclick="adminDeleteTask(${t.id})">حذف</button>
+          </td>
+        </tr>`).join('')}
+      </tbody></table></div>`;
+  } catch(e) { toasts.error('فشل تحميل المهام'); }
+}
+
+async function loadUserTokens(id) {
+  const el = document.getElementById('userTokensContent');
+  el.innerHTML = '<div class="empty"><div class="spinner"></div></div>';
+  try {
+    const tokens = await api.get(`/api/admin/users/${id}/tokens`);
+    if (!tokens.length) { el.innerHTML = '<div class="empty"><p>لا توجد توكنات</p></div>'; return; }
+    el.innerHTML = `<div class="table-wrap"><table>
+      <thead><tr><th>التسمية</th><th>التوكن</th><th>الحالة</th><th>التاريخ</th><th>حذف</th></tr></thead>
+      <tbody>${tokens.map(t => `
+        <tr>
+          <td>${t.label || '—'}</td>
+          <td class="mono">${maskToken(t.tokenValue)}</td>
+          <td><span class="badge badge-${t.status === 'active' ? 'success' : t.status === 'invalid' ? 'failed' : 'warn'}"><span class="badge-dot"></span>${t.status === 'active' ? 'صالح' : t.status === 'invalid' ? 'غير صالح' : 'غير معروف'}</span></td>
+          <td style="color:var(--text3)">${fmtDate(t.createdAt)}</td>
+          <td><button class="btn btn-danger btn-sm" onclick="adminDeleteToken(${t.id})">حذف</button></td>
+        </tr>`).join('')}
+      </tbody></table></div>`;
+  } catch(e) { toasts.error('فشل تحميل التوكنات'); }
+}
+
+function switchModalTab(tab, btn) {
+  document.querySelectorAll('.modal-panel').forEach(p => p.style.display = 'none');
+  document.querySelectorAll('.modal-tab').forEach(b => b.classList.remove('active'));
+  document.getElementById(`modal-${tab}`).style.display = 'block';
+  if (btn) btn.classList.add('active');
+  if (tab === 'tasks')  loadUserTasks(currentUserId);
+  if (tab === 'tokens') loadUserTokens(currentUserId);
+}
+
+function switchTab(tab, btn) {
+  document.querySelectorAll('.tab-panel').forEach(p => p.style.display = 'none');
+  document.querySelectorAll('.admin-tab').forEach(b => b.classList.remove('active'));
+  document.getElementById(`tab-${tab}`).style.display = 'block';
+  btn.classList.add('active');
+  if (tab === 'notifications') loadSentNotifications();
+}
+
+async function adminChangePwd() {
+  const pwd = document.getElementById('adminNewPwd').value;
+  if (!pwd) return toasts.error('أدخل كلمة المرور');
+  try {
+    await api.post(`/api/admin/users/${currentUserId}/password`, { newPassword: pwd });
+    toasts.success('تم تغيير كلمة المرور ✓');
+    document.getElementById('adminNewPwd').value = '';
+  } catch(e) { toasts.error(e.message || 'فشل التغيير'); }
+}
+
+async function deleteUser() {
+  if (!await confirm('هل تريد حذف هذا المستخدم وجميع بياناته نهائياً؟', 'حذف الحساب')) return;
+  try {
+    await api.delete(`/api/admin/users/${currentUserId}`);
+    toasts.success('تم حذف المستخدم');
+    document.getElementById('userModal').style.display = 'none';
+    loadUsers();
+    loadStats();
+  } catch(e) { toasts.error(e.message || 'فشل الحذف'); }
+}
+
+async function toggleAdminRole() {
+  try {
+    const { isAdmin } = await api.post(`/api/admin/users/${currentUserId}/toggle-admin`, {});
+    currentUserIsAdmin = isAdmin;
+    document.getElementById('toggleAdminText').textContent = isAdmin ? 'إلغاء صلاحية المشرف' : 'منح صلاحية المشرف';
+    toasts.success(isAdmin ? 'تم منح صلاحية المشرف ✓' : 'تم إلغاء صلاحية المشرف');
+    loadUsers();
+    loadUserInfo(currentUserId);
+  } catch(e) { toasts.error(e.message || 'فشل التغيير'); }
+}
+
+function openTaskEdit(id, channelId, message, interval) {
+  currentTaskId = id;
+  document.getElementById('editChannelId').value = channelId;
+  document.getElementById('editMessage').value = message;
+  document.getElementById('editInterval').value = interval;
+  document.getElementById('taskEditModal').style.display = 'flex';
+}
+
+async function saveTaskEdit() {
+  try {
+    await api.req('PUT', `/api/admin/tasks/${currentTaskId}`, {
+      channelId: document.getElementById('editChannelId').value,
+      message: document.getElementById('editMessage').value,
+      intervalSeconds: document.getElementById('editInterval').value
+    });
+    toasts.success('تم حفظ التعديلات ✓');
+    document.getElementById('taskEditModal').style.display = 'none';
+    loadUserTasks(currentUserId);
+  } catch(e) { toasts.error(e.message || 'فشل الحفظ'); }
+}
+
+async function adminToggleTask(id, btn) {
+  try {
+    const { isActive } = await api.post(`/api/admin/tasks/${id}/toggle`, {});
+    btn.textContent = isActive ? 'إيقاف' : 'تشغيل';
+    toasts.success(isActive ? 'تم تشغيل المهمة' : 'تم إيقاف المهمة');
+    loadUserTasks(currentUserId);
+  } catch(e) { toasts.error('فشل تغيير حالة المهمة'); }
+}
+
+async function adminDeleteTask(id) {
+  if (!await confirm('هل تريد حذف هذه المهمة نهائياً؟', 'حذف المهمة')) return;
+  try {
+    await api.delete(`/api/admin/tasks/${id}`);
+    toasts.success('تم حذف المهمة');
+    loadUserTasks(currentUserId);
+    loadStats();
+  } catch(e) { toasts.error('فشل الحذف'); }
+}
+
+async function adminDeleteToken(id) {
+  if (!await confirm('هل تريد حذف هذا التوكن؟', 'حذف التوكن')) return;
+  try {
+    await api.delete(`/api/admin/tokens/${id}`);
+    toasts.success('تم حذف التوكن');
+    loadUserTokens(currentUserId);
+    loadStats();
+  } catch(e) { toasts.error('فشل الحذف'); }
+}
+
+async function sendNotification() {
+  const msg = document.getElementById('notifMsg').value.trim();
+  if (!msg) return toasts.error('اكتب نص الإشعار أولاً');
+  try {
+    const r = await api.post('/api/admin/notifications', { message: msg });
+    toasts.success(`تم إرسال الإشعار لـ ${r.count} مستخدم ✓`);
+    document.getElementById('notifMsg').value = '';
+    loadSentNotifications();
+  } catch(e) { toasts.error(e.message || 'فشل الإرسال'); }
+}
+
+async function loadSentNotifications() {
+  const el = document.getElementById('sentNotifList');
+  try {
+    const notifs = await api.get('/api/admin/notifications');
+    if (!notifs.length) { el.innerHTML = '<div class="empty"><p>لا توجد إشعارات مُرسلة</p></div>'; return; }
+    el.innerHTML = `<div style="padding:.5rem 0">${notifs.map(n => `
+      <div class="notif-item">
+        <div class="notif-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="16" height="16"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg></div>
+        <div class="notif-content">
+          <p class="notif-msg">${n.message}</p>
+          <span class="notif-meta">${fmtDate(n.createdAt)} · أُرسل لـ <b>${n.recipientCount}</b> مستخدم</span>
+        </div>
+      </div>`).join('')}</div>`;
+  } catch(e) { el.innerHTML = '<div class="empty"><p>فشل التحميل</p></div>'; }
+}
+
+function closeModal(e) { if (e.target.id === 'userModal') document.getElementById('userModal').style.display = 'none'; }
+function closeTaskModal(e) { if (e.target.id === 'taskEditModal') document.getElementById('taskEditModal').style.display = 'none'; }
+</script>
+</body>
+</html>

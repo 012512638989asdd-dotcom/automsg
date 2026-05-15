@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>الرئيسية — automsg</title>
+  <link rel="stylesheet" href="/css/style.css">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='22' fill='%231a56ff'/><text y='.9em' font-size='70' x='15' fill='white' font-weight='bold'>A</text></svg>">
+</head>
+<body>
+<div class="app">
+
+  <!-- Sidebar -->
+  <aside class="sidebar" id="sidebar">
+    <div class="sidebar-logo">
+      <svg viewBox="0 0 36 36" width="32" height="32" fill="none">
+        <path d="M5 27 L18 5 L31 27" stroke="#1a56ff" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"/>
+        <path d="M10 20 L26 20" stroke="#1a56ff" stroke-width="2.8" stroke-linecap="round"/>
+        <circle cx="27" cy="26" r="6" fill="#0c1021" stroke="#1a56ff" stroke-width="2"/>
+        <circle cx="24.8" cy="26" r=".9" fill="#3b82f6"/>
+        <circle cx="27" cy="26" r=".9" fill="#3b82f6"/>
+        <circle cx="29.2" cy="26" r=".9" fill="#3b82f6"/>
+      </svg>
+    </div>
+
+    <nav class="sidebar-nav">
+      <a href="/dashboard" class="nav-item" data-page="dashboard" title="لوحة التحكم">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>
+        <span class="nav-tooltip">لوحة التحكم</span>
+      </a>
+      <a href="/tokens" class="nav-item" data-page="tokens" title="التوكنات">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 2l-2 2m-7.61 7.61a5.5 5.5 0 1 1-7.778 7.778 5.5 5.5 0 0 1 7.777-7.777zm0 0L15.5 7.5m0 0l3 3L22 7l-3-3m-3.5 3.5L19 4"/></svg>
+        <span class="nav-tooltip">التوكنات</span>
+      </a>
+      <a href="/tasks" class="nav-item" data-page="tasks" title="المهام">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
+        <span class="nav-tooltip">المهام</span>
+      </a>
+      <a href="/logs" class="nav-item" data-page="logs" title="السجلات">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg>
+        <span class="nav-tooltip">السجلات</span>
+      </a>
+      <a href="/profile" class="nav-item" data-page="profile" title="الملف الشخصي">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+        <span class="nav-tooltip">الملف الشخصي</span>
+      </a>
+      <a href="/admin" class="nav-item admin-only" data-page="admin" title="الإدارة" style="display:none">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+        <span class="nav-tooltip">الإدارة</span>
+      </a>
+    </nav>
+
+    <div class="sidebar-bottom">
+      <button onclick="logout()" class="nav-item" title="تسجيل الخروج" style="background:none;border:none;cursor:pointer;width:46px;height:46px;">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
+        <span class="nav-tooltip">تسجيل الخروج</span>
+      </button>
+    </div>
+  </aside>
+  <div class="overlay" id="overlay"></div>
+
+  <!-- Main -->
+  <div class="main">
+    <!-- Topbar -->
+    <header class="topbar">
+      <button class="hamburger" id="hamburger">☰</button>
+      <a href="/dashboard" class="topbar-brand">
+        <svg viewBox="0 0 28 28" width="26" height="26" fill="none">
+          <path d="M4 22 L14 4 L24 22" stroke="#1a56ff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+          <path d="M8 16 L20 16" stroke="#1a56ff" stroke-width="2.5" stroke-linecap="round"/>
+          <circle cx="21" cy="21" r="5" fill="#0c1021" stroke="#1a56ff" stroke-width="1.8"/>
+          <circle cx="19.2" cy="21" r=".75" fill="#3b82f6"/>
+          <circle cx="21" cy="21" r=".75" fill="#3b82f6"/>
+          <circle cx="22.8" cy="21" r=".75" fill="#3b82f6"/>
+        </svg>
+        <span class="brand-name">auto<span>msg</span></span>
+      </a>
+      <div class="topbar-search">
+        <span class="search-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg></span>
+        <input type="text" placeholder="بحث...">
+      </div>
+      <div class="topbar-actions">
+        <button onclick="loadStats()" class="topbar-icon-btn" title="تحديث">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="23 4 23 10 17 10"/><polyline points="1 20 1 14 7 14"/><path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"/></svg>
+        </button>
+        <button class="topbar-icon-btn" title="إشعارات">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
+          <span class="notif-dot"></span>
+        </button>
+        <button class="topbar-icon-btn" title="الحساب" id="userBtn">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+        </button>
+      </div>
+    </header>
+
+    <div class="content">
+
+      <!-- Hero Banner -->
+
+      <!-- Mini Stats -->
+      <div class="mini-stats">
+        <div class="mini-stat">
+          <div class="mini-stat-chart">
+            <svg viewBox="0 0 52 52" width="52" height="52">
+              <circle class="donut-ring donut-bg" cx="26" cy="26" r="20" stroke-width="5"/>
+              <circle class="donut-ring donut-fill" cx="26" cy="26" r="20" stroke-width="5"
+                stroke-dasharray="125.66" stroke-dashoffset="40" transform="rotate(-90 26 26)" id="donut1"/>
+            </svg>
+          </div>
+          <div class="mini-stat-info">
+            <div class="mini-stat-value" id="s-tokens">—</div>
+            <div class="mini-stat-label">إجمالي التوكنات</div>
+          </div>
+        </div>
+        <div class="mini-stat">
+          <div class="mini-stat-chart">
+            <svg viewBox="0 0 52 52" width="52" height="52">
+              <circle class="donut-ring donut-bg" cx="26" cy="26" r="20" stroke-width="5"/>
+              <circle class="donut-ring donut-fill green" cx="26" cy="26" r="20" stroke-width="5"
+                stroke-dasharray="125.66" stroke-dashoffset="50" transform="rotate(-90 26 26)" id="donut2"/>
+            </svg>
+          </div>
+          <div class="mini-stat-info">
+            <div class="mini-stat-value" id="s-tasks">—</div>
+            <div class="mini-stat-label">إجمالي المهام</div>
+          </div>
+        </div>
+        <div class="mini-stat">
+          <div class="mini-stat-chart">
+            <svg viewBox="0 0 52 20" width="52" height="20">
+              <polyline points="0,15 10,10 20,13 30,5 40,9 52,2"
+                fill="none" stroke="#1a56ff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+              <circle cx="52" cy="2" r="3" fill="#1a56ff"/>
+            </svg>
+          </div>
+          <div class="mini-stat-info">
+            <div class="mini-stat-value" id="s-sent">—</div>
+            <div class="mini-stat-label">رسائل مُرسلة</div>
+          </div>
+        </div>
+        <div class="mini-stat">
+          <div class="mini-stat-chart">
+            <svg viewBox="0 0 52 28" width="52" height="28">
+              <rect x="2"  y="16" width="8" height="12" rx="2" fill="#1a56ff" opacity=".4"/>
+              <rect x="14" y="10" width="8" height="18" rx="2" fill="#1a56ff" opacity=".6"/>
+              <rect x="26" y="6"  width="8" height="22" rx="2" fill="#1a56ff" opacity=".8"/>
+              <rect x="38" y="2"  width="8" height="26" rx="2" fill="#1a56ff"/>
+            </svg>
+          </div>
+          <div class="mini-stat-info">
+            <div class="mini-stat-value" id="s-rate">—</div>
+            <div class="mini-stat-label">معدل النجاح</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Progress -->
+      <div class="card" style="margin-bottom:1rem">
+        <div class="card-header">
+          <h2>
+            <svg viewBox="0 0 16 16" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" style="vertical-align:middle;margin-left:4px"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
+            معدل نجاح الإرسال
+          </h2>
+          <span id="rateLabel" style="font-weight:800;color:var(--blue3);font-size:.9rem">0%</span>
+        </div>
+        <div class="card-body">
+          <div class="progress-bar"><div class="progress-fill" id="rateFill" style="width:0%"></div></div>
+          <p style="font-size:.76rem;color:var(--text3);margin-top:.5rem">نسبة الرسائل المرسلة بنجاح من إجمالي المحاولات</p>
+        </div>
+      </div>
+
+      <!-- Recent Logs -->
+      <div class="card">
+        <div class="card-header">
+          <h2>آخر النشاطات</h2>
+          <a href="/logs" class="btn btn-secondary btn-sm">عرض الكل</a>
+        </div>
+        <div class="table-wrap">
+          <table>
+            <thead><tr><th>القناة</th><th>الحالة</th><th>الوقت</th><th>الخطأ</th></tr></thead>
+            <tbody id="recentLogs">
+              <tr><td colspan="4"><div class="empty"><div class="spinner"></div></div></td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<script src="/js/app.js"></script>
+<script>
+(async () => {
+  const me = await authGuard();
+  if (!me) return;
+  document.getElementById('userBtn').title = me.username;
+  initSidebar('dashboard');
+  showAdminNav(me.isAdmin);
+  await loadStats();
+  await loadRecentLogs();
+})();
+
+async function loadStats() {
+  try {
+    const s = await api.get('/api/stats');
+    document.getElementById('s-tokens').textContent = s.totalTokens;
+    document.getElementById('s-tasks').textContent  = s.totalTasks;
+    document.getElementById('s-sent').textContent   = s.totalSent.toLocaleString('ar');
+    document.getElementById('s-rate').textContent   = s.successRate + '%';
+    document.getElementById('rateFill').style.width  = s.successRate + '%';
+    document.getElementById('rateLabel').textContent = s.successRate + '%';
+    const circ = 125.66;
+    const d1 = document.getElementById('donut1');
+    const d2 = document.getElementById('donut2');
+    if (d1 && s.totalTokens) d1.setAttribute('stroke-dashoffset', circ - Math.min((s.activeTokens / Math.max(s.totalTokens,1)) * circ, circ));
+    if (d2 && s.totalTasks)  d2.setAttribute('stroke-dashoffset', circ - Math.min((s.activeTasks  / Math.max(s.totalTasks,1))  * circ, circ));
+  } catch (e) { toasts.error('فشل تحميل الإحصائيات'); }
+}
+
+async function loadRecentLogs() {
+  try {
+    const logs = await api.get('/api/logs');
+    const recent = logs.slice(0, 8);
+    const tbody = document.getElementById('recentLogs');
+    if (!recent.length) { tbody.innerHTML = `<tr><td colspan="4"><div class="empty"><p>لا توجد نشاطات بعد</p></div></td></tr>`; return; }
+    tbody.innerHTML = recent.map(l => `
+      <tr>
+        <td class="mono">${l.channelId || '—'}</td>
+        <td><span class="badge badge-${l.status === 'success' ? 'success' : 'failed'}">
+          <span class="badge-dot"></span>${l.status === 'success' ? 'نجح' : 'فشل'}</span></td>
+        <td style="color:var(--text3)">${fmtDate(l.sentAt)}</td>
+        <td style="color:var(--red);font-size:.75rem">${l.errorMessage || '—'}</td>
+      </tr>`).join('');
+  } catch {}
+}
+</script>
+</body>
+</html>

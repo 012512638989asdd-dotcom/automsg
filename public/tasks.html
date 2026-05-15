@@ -1,0 +1,373 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>المهام — automsg</title>
+  <link rel="stylesheet" href="/css/style.css">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='22' fill='%231a56ff'/><text y='.9em' font-size='70' x='15' fill='white' font-weight='bold'>A</text></svg>">
+</head>
+<body>
+<div class="app">
+
+  <aside class="sidebar" id="sidebar">
+    <div class="sidebar-logo">
+      <svg viewBox="0 0 36 36" width="32" height="32" fill="none">
+        <path d="M5 27 L18 5 L31 27" stroke="#1a56ff" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"/>
+        <path d="M10 20 L26 20" stroke="#1a56ff" stroke-width="2.8" stroke-linecap="round"/>
+        <circle cx="27" cy="26" r="6" fill="#0c1021" stroke="#1a56ff" stroke-width="2"/>
+        <circle cx="24.8" cy="26" r=".9" fill="#3b82f6"/>
+        <circle cx="27" cy="26" r=".9" fill="#3b82f6"/>
+        <circle cx="29.2" cy="26" r=".9" fill="#3b82f6"/>
+      </svg>
+    </div>
+    <nav class="sidebar-nav">
+      <a href="/dashboard" class="nav-item" data-page="dashboard">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>
+        <span class="nav-tooltip">لوحة التحكم</span>
+      </a>
+      <a href="/tokens" class="nav-item" data-page="tokens">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 2l-2 2m-7.61 7.61a5.5 5.5 0 1 1-7.778 7.778 5.5 5.5 0 0 1 7.777-7.777zm0 0L15.5 7.5m0 0l3 3L22 7l-3-3m-3.5 3.5L19 4"/></svg>
+        <span class="nav-tooltip">التوكنات</span>
+      </a>
+      <a href="/tasks" class="nav-item" data-page="tasks">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
+        <span class="nav-tooltip">المهام</span>
+      </a>
+      <a href="/logs" class="nav-item" data-page="logs">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>
+        <span class="nav-tooltip">السجلات</span>
+      </a>
+      <a href="/profile" class="nav-item" data-page="profile" title="الملف الشخصي">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+        <span class="nav-tooltip">الملف الشخصي</span>
+      </a>
+      <a href="/admin" class="nav-item admin-only" data-page="admin" title="الإدارة" style="display:none">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+        <span class="nav-tooltip">الإدارة</span>
+      </a>
+    </nav>
+    <div class="sidebar-bottom">
+      <button onclick="logout()" class="nav-item" style="background:none;border:none;cursor:pointer;width:46px;height:46px;">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
+        <span class="nav-tooltip">تسجيل الخروج</span>
+      </button>
+    </div>
+  </aside>
+  <div class="overlay" id="overlay"></div>
+
+  <div class="main">
+    <header class="topbar">
+      <button class="hamburger" id="hamburger">☰</button>
+      <a href="/dashboard" class="topbar-brand">
+        <svg viewBox="0 0 28 28" width="24" height="24" fill="none">
+          <path d="M4 22 L14 4 L24 22" stroke="#1a56ff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+          <path d="M8 16 L20 16" stroke="#1a56ff" stroke-width="2.5" stroke-linecap="round"/>
+          <circle cx="21" cy="21" r="5" fill="#0c1021" stroke="#1a56ff" stroke-width="1.8"/>
+          <circle cx="19.2" cy="21" r=".75" fill="#3b82f6"/>
+          <circle cx="21" cy="21" r=".75" fill="#3b82f6"/>
+          <circle cx="22.8" cy="21" r=".75" fill="#3b82f6"/>
+        </svg>
+        <span class="brand-name">auto<span>msg</span></span>
+      </a>
+      <div class="topbar-search">
+        <span class="search-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg></span>
+        <input type="text" placeholder="بحث...">
+      </div>
+      <div class="topbar-actions">
+        <button class="topbar-icon-btn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg><span class="notif-dot"></span></button>
+        <button class="topbar-icon-btn" id="userBtn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg></button>
+      </div>
+    </header>
+
+    <div class="content">
+      <div class="page-header">
+        <div><h1>إدارة المهام</h1><p>أنشئ مهام إرسال تلقائي إلى قنوات Discord</p></div>
+      </div>
+
+      <!-- Add Task -->
+      <div class="card" style="margin-bottom:1rem" id="addTaskCard">
+        <div class="card-header" style="cursor:pointer" onclick="toggleAddForm()">
+          <h2>إنشاء مهمة جديدة</h2>
+          <span id="toggleIcon" style="color:var(--text3);font-size:1rem">▼</span>
+        </div>
+        <div class="card-body" id="addFormBody">
+          <form id="addTaskForm" enctype="multipart/form-data">
+            <div class="form-grid">
+              <div class="form-group">
+                <label>التوكن <span style="color:var(--red)">*</span></label>
+                <select id="taskToken" required><option value="">— اختر توكن —</option></select>
+              </div>
+              <div class="form-group">
+                <label>معرف القناة <span style="color:var(--red)">*</span></label>
+                <input type="text" id="taskChannel" placeholder="مثال: 1234567890123456789" required>
+                <small>channel ID من Discord</small>
+              </div>
+              <div class="form-group">
+                <label>معرف السيرفر (اختياري)</label>
+                <input type="text" id="taskServer" placeholder="Guild ID">
+              </div>
+              <div class="form-group">
+                <label>الفاصل الزمني</label>
+                <select id="taskInterval">
+                  <option value="60">كل دقيقة</option>
+                  <option value="300" selected>كل 5 دقائق</option>
+                  <option value="600">كل 10 دقائق</option>
+                  <option value="1800">كل 30 دقيقة</option>
+                  <option value="3600">كل ساعة</option>
+                  <option value="7200">كل ساعتين</option>
+                  <option value="21600">كل 6 ساعات</option>
+                  <option value="86400">كل يوم</option>
+                  <option value="custom">مخصص...</option>
+                </select>
+              </div>
+              <div class="form-group" id="customIntervalGroup" style="display:none">
+                <label>فاصل مخصص (ثانية)</label>
+                <input type="number" id="customInterval" placeholder="مثال: 120" min="30">
+              </div>
+              <div class="form-group full">
+                <label>نص الرسالة <span style="color:var(--red)">*</span></label>
+                <textarea id="taskMessage" rows="3" placeholder="اكتب الرسالة التي ستُرسل إلى القناة..." required></textarea>
+                <small id="charCount" style="text-align:left;direction:ltr">0 / 2000</small>
+              </div>
+              <div class="form-group full">
+                <label>صورة مرفقة (اختياري)</label>
+                <div class="upload-area" id="uploadArea" onclick="document.getElementById('imageFile').click()">
+                  <div class="upload-icon">🖼</div>
+                  <p>اضغط لاختيار صورة أو <span>اسحب وأفلت</span></p>
+                  <p style="margin-top:.25rem;font-size:.72rem">PNG، JPG، GIF، WebP — حتى 8 ميجا</p>
+                </div>
+                <input type="file" id="imageFile" accept="image/*" style="display:none">
+                <div class="upload-preview" id="uploadPreview"></div>
+                <small id="uploadedPath" style="color:var(--blue3)"></small>
+              </div>
+            </div>
+            <div style="margin-top:1rem;display:flex;gap:.5rem;flex-wrap:wrap">
+              <button type="submit" class="btn btn-primary" id="addTaskBtn">
+                <span id="addTaskText">إنشاء المهمة</span>
+              </button>
+              <button type="button" onclick="resetForm()" class="btn btn-secondary">إعادة تعيين</button>
+            </div>
+          </form>
+        </div>
+      </div>
+
+      <!-- Tasks List -->
+      <div class="card">
+        <div class="card-header">
+          <h2>قائمة المهام</h2>
+          <span id="tasksCount" style="font-size:.78rem;color:var(--text3)"></span>
+          <button onclick="loadTasks()" class="btn btn-secondary btn-sm">
+            <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polyline points="23 4 23 10 17 10"/><polyline points="1 20 1 14 7 14"/><path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"/></svg>
+          </button>
+        </div>
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr><th>التفعيل</th><th>القناة</th><th>الرسالة</th><th>الفاصل</th><th>التوكن</th><th>المرسل</th><th>التشغيل القادم</th><th>الإجراءات</th></tr>
+            </thead>
+            <tbody id="tasksList">
+              <tr><td colspan="8"><div class="empty"><div class="spinner"></div></div></td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script src="/js/app.js"></script>
+<script>
+let tokens = [];
+let uploadedPath = '';
+let formVisible = true;
+
+(async () => {
+  const me = await authGuard();
+  if (!me) return;
+  document.getElementById('userBtn').title = me.username;
+  initSidebar('tasks');
+  showAdminNav(me.isAdmin);
+  tokens = await api.get('/api/tokens').catch(() => []);
+  populateTokenSelect();
+  await loadTasks();
+  setupIntervalSelect();
+  setupCharCount();
+  setupUpload();
+})();
+
+function toggleAddForm() {
+  formVisible = !formVisible;
+  document.getElementById('addFormBody').style.display = formVisible ? '' : 'none';
+  document.getElementById('toggleIcon').textContent = formVisible ? '▲' : '▼';
+}
+
+function populateTokenSelect() {
+  const sel = document.getElementById('taskToken');
+  sel.innerHTML = '<option value="">— اختر توكن —</option>';
+  if (!tokens.length) { sel.innerHTML += '<option disabled>لا توجد توكنات — أضف أولاً</option>'; return; }
+  tokens.forEach(t => {
+    const opt = document.createElement('option');
+    opt.value = t.id;
+    opt.textContent = t.label ? `${t.label} (${maskToken(t.tokenValue)})` : maskToken(t.tokenValue);
+    sel.appendChild(opt);
+  });
+}
+
+function setupIntervalSelect() {
+  document.getElementById('taskInterval').onchange = () => {
+    const v = document.getElementById('taskInterval').value;
+    document.getElementById('customIntervalGroup').style.display = v === 'custom' ? '' : 'none';
+  };
+}
+
+function setupCharCount() {
+  document.getElementById('taskMessage').oninput = function() {
+    document.getElementById('charCount').textContent = `${this.value.length} / 2000`;
+    document.getElementById('charCount').style.color = this.value.length > 1900 ? 'var(--red)' : 'var(--text3)';
+  };
+}
+
+function setupUpload() {
+  const area  = document.getElementById('uploadArea');
+  const input = document.getElementById('imageFile');
+  input.onchange = handleFile;
+  area.ondragover  = e => { e.preventDefault(); area.style.borderColor = 'var(--blue)'; };
+  area.ondragleave = () => { area.style.borderColor = ''; };
+  area.ondrop = e => {
+    e.preventDefault(); area.style.borderColor = '';
+    if (e.dataTransfer.files[0]) { input.files = e.dataTransfer.files; handleFile(); }
+  };
+}
+
+async function handleFile() {
+  const file = document.getElementById('imageFile').files[0];
+  if (!file) return;
+  if (file.size > 8 * 1024 * 1024) { toasts.error('الصورة أكبر من 8 ميجا'); return; }
+  const preview = document.getElementById('uploadPreview');
+  const reader = new FileReader();
+  reader.onload = e => { preview.innerHTML = `<img src="${e.target.result}" alt="preview">`; };
+  reader.readAsDataURL(file);
+  const fd = new FormData();
+  fd.append('file', file);
+  try {
+    const r = await fetch('/api/upload', { method: 'POST', credentials: 'include', body: fd });
+    const data = await r.json();
+    if (!r.ok) throw new Error(data.error || 'فشل الرفع');
+    uploadedPath = data.url;
+    document.getElementById('uploadedPath').textContent = '✓ تم رفع الصورة: ' + data.url;
+    toasts.success('تم رفع الصورة بنجاح ✓');
+  } catch (e) { toasts.error(e.message); uploadedPath = ''; }
+}
+
+function resetForm() {
+  document.getElementById('addTaskForm').reset();
+  document.getElementById('uploadPreview').innerHTML = '';
+  document.getElementById('uploadedPath').textContent = '';
+  document.getElementById('charCount').textContent = '0 / 2000';
+  uploadedPath = '';
+}
+
+document.getElementById('addTaskForm').onsubmit = async (e) => {
+  e.preventDefault();
+  const btn = document.getElementById('addTaskBtn');
+  const txt = document.getElementById('addTaskText');
+  const tokenId   = document.getElementById('taskToken').value;
+  const channelId = document.getElementById('taskChannel').value.trim();
+  const message   = document.getElementById('taskMessage').value.trim();
+  const serverId  = document.getElementById('taskServer').value.trim();
+  const ivSel     = document.getElementById('taskInterval').value;
+  const intervalSeconds = ivSel === 'custom'
+    ? parseInt(document.getElementById('customInterval').value) || 300
+    : parseInt(ivSel);
+  if (!tokenId || !channelId || !message) { toasts.error('الرجاء ملء جميع الحقول المطلوبة'); return; }
+  if (message.length > 2000) { toasts.error('الرسالة أطول من 2000 حرف'); return; }
+  btn.disabled = true;
+  txt.innerHTML = '<span class="spinner"></span> جاري الإنشاء...';
+  try {
+    await api.post('/api/tasks', { tokenId: parseInt(tokenId), channelId, message, serverId: serverId || undefined, imagePath: uploadedPath || undefined, intervalSeconds });
+    toasts.success('تم إنشاء المهمة بنجاح ✓');
+    resetForm();
+    await loadTasks();
+  } catch (e) { toasts.error(e.message || 'فشل إنشاء المهمة'); }
+  finally { btn.disabled = false; txt.textContent = 'إنشاء المهمة'; }
+};
+
+async function loadTasks() {
+  try {
+    const tasks = await api.get('/api/tasks');
+    document.getElementById('tasksCount').textContent = `(${tasks.length} مهمة)`;
+    renderTasks(tasks);
+  } catch (e) { toasts.error('فشل تحميل المهام'); }
+}
+
+function renderTasks(tasks) {
+  const tbody = document.getElementById('tasksList');
+  if (!tasks.length) {
+    tbody.innerHTML = `<tr><td colspan="8"><div class="empty"><div class="empty-icon">⚡</div><h3>لا توجد مهام</h3><p>أنشئ مهمتك الأولى أعلاه</p></div></td></tr>`;
+    return;
+  }
+  tbody.innerHTML = tasks.map(t => {
+    const msg = t.message.length > 45 ? t.message.slice(0, 45) + '...' : t.message;
+    const nextRun = t.nextRunAt ? timeAgo(t.nextRunAt) : '—';
+    return `<tr>
+      <td>
+        <label class="toggle" title="${t.isActive ? 'إيقاف' : 'تشغيل'}">
+          <input type="checkbox" ${t.isActive ? 'checked' : ''} onchange="toggleTask(${t.id}, this)">
+          <span class="toggle-slider"></span>
+        </label>
+      </td>
+      <td class="mono">${t.channelId}</td>
+      <td style="max-width:180px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap" title="${t.message}">
+        ${msg}${t.imagePath ? ' <span title="مرفق صورة">🖼</span>' : ''}
+      </td>
+      <td><span class="badge badge-blue">${fmtInterval(t.intervalSeconds)}</span></td>
+      <td style="color:var(--text3);font-size:.76rem">${t.tokenLabel || '—'}</td>
+      <td style="font-weight:700;color:var(--blue3)">${t.sentCount.toLocaleString('ar')}</td>
+      <td style="color:var(--text3);font-size:.76rem">${t.isActive ? nextRun : '⏸ موقوف'}</td>
+      <td>
+        <div style="display:flex;gap:.3rem">
+          <button onclick="sendNow(${t.id})" class="btn btn-success btn-sm btn-icon" title="إرسال الآن">
+            <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
+          </button>
+          <button onclick="deleteTask(${t.id})" class="btn btn-danger btn-sm btn-icon" title="حذف">
+            <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2"/></svg>
+          </button>
+        </div>
+      </td>
+    </tr>`;
+  }).join('');
+}
+
+async function toggleTask(id, checkbox) {
+  const prev = !checkbox.checked;
+  try {
+    await api.post(`/api/tasks/${id}/toggle`);
+    toasts.info(checkbox.checked ? 'تم تفعيل المهمة ▶' : 'تم إيقاف المهمة ⏸');
+    await loadTasks();
+  } catch (e) { checkbox.checked = prev; toasts.error(e.message); }
+}
+
+async function sendNow(id) {
+  const btn = event.target.closest('button');
+  btn.disabled = true;
+  try {
+    const r = await api.post(`/api/tasks/${id}/send`);
+    if (r.success) toasts.success(r.message || 'تم الإرسال ✓');
+    else toasts.error(r.message || 'فشل الإرسال');
+    await loadTasks();
+  } catch (e) { toasts.error(e.message); }
+  finally { btn.disabled = false; }
+}
+
+async function deleteTask(id) {
+  if (!await confirm('هل تريد حذف هذه المهمة وكل سجلاتها؟', 'حذف المهمة')) return;
+  try {
+    await api.delete(`/api/tasks/${id}`);
+    toasts.success('تم حذف المهمة');
+    await loadTasks();
+  } catch (e) { toasts.error(e.message); }
+}
+</script>
+</body>
+</html>

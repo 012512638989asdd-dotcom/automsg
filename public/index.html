@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>تسجيل الدخول — automsg</title>
+  <link rel="stylesheet" href="/css/style.css">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='22' fill='%231a56ff'/><text y='.9em' font-size='70' x='15' fill='white' font-weight='bold'>A</text></svg>">
+</head>
+<body>
+<div class="auth-page">
+  <div class="auth-card">
+    <div class="auth-logo">
+      <div class="logo-icon">
+        <svg viewBox="0 0 40 40" width="36" height="36" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M6 30 L20 6 L34 30" stroke="white" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+          <path d="M11 22 L29 22" stroke="white" stroke-width="3" stroke-linecap="round"/>
+          <circle cx="30" cy="28" r="7" fill="#1a56ff" stroke="white" stroke-width="2"/>
+          <circle cx="27.5" cy="28" r="1" fill="white"/>
+          <circle cx="30" cy="28" r="1" fill="white"/>
+          <circle cx="32.5" cy="28" r="1" fill="white"/>
+        </svg>
+      </div>
+      <h1>auto<span style="color:var(--blue3)">msg</span></h1>
+      <p>منصة أتمتة Discord الاحترافية</p>
+    </div>
+
+    <form id="loginForm">
+      <div class="form-group" style="margin-bottom:.85rem">
+        <label>اسم المستخدم</label>
+        <input type="text" id="username" placeholder="أدخل اسم المستخدم" required autocomplete="username">
+      </div>
+      <div class="form-group" style="margin-bottom:1.25rem">
+        <label>كلمة المرور</label>
+        <div class="input-row">
+          <input type="password" id="password" placeholder="أدخل كلمة المرور" required autocomplete="current-password">
+          <button type="button" class="btn btn-secondary btn-icon" id="togglePass" title="إظهار/إخفاء">
+            <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+          </button>
+        </div>
+      </div>
+      <div id="loginError" style="color:var(--red);font-size:.82rem;margin-bottom:.75rem;display:none"></div>
+      <button type="submit" class="btn btn-primary btn-block btn-lg" id="loginBtn">
+        <span id="loginText">تسجيل الدخول</span>
+      </button>
+    </form>
+
+    <div style="text-align:center;margin-top:1rem;font-size:.82rem;color:var(--text2)">
+      ليس لديك حساب؟
+      <a href="/register" style="color:var(--blue3);font-weight:700;text-decoration:none">إنشاء حساب</a>
+    </div>
+
+    <div class="auth-brand">© 2025 <span>automsg</span> — جميع الحقوق محفوظة</div>
+  </div>
+</div>
+
+<script src="/js/app.js"></script>
+<script>
+  api.get('/api/auth/me').then(() => location.href = '/dashboard').catch(() => {});
+
+  document.getElementById('togglePass').onclick = () => {
+    const p = document.getElementById('password');
+    p.type = p.type === 'password' ? 'text' : 'password';
+  };
+
+  document.getElementById('loginForm').onsubmit = async (e) => {
+    e.preventDefault();
+    const btn = document.getElementById('loginBtn');
+    const txt = document.getElementById('loginText');
+    const err = document.getElementById('loginError');
+    err.style.display = 'none';
+    btn.disabled = true;
+    txt.innerHTML = '<span class="spinner"></span> جاري الدخول...';
+    try {
+      await api.post('/api/auth/login', {
+        username: document.getElementById('username').value.trim(),
+        password: document.getElementById('password').value
+      });
+      location.href = '/dashboard';
+    } catch (e) {
+      err.textContent = e.message || 'فشل تسجيل الدخول';
+      err.style.display = 'block';
+      btn.disabled = false;
+      txt.textContent = 'تسجيل الدخول';
+    }
+  };
+</script>
+</body>
+</html>

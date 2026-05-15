@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>السجلات — automsg</title>
+  <link rel="stylesheet" href="/css/style.css">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='22' fill='%231a56ff'/><text y='.9em' font-size='70' x='15' fill='white' font-weight='bold'>A</text></svg>">
+</head>
+<body>
+<div class="app">
+
+  <aside class="sidebar" id="sidebar">
+    <div class="sidebar-logo">
+      <svg viewBox="0 0 36 36" width="32" height="32" fill="none">
+        <path d="M5 27 L18 5 L31 27" stroke="#1a56ff" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"/>
+        <path d="M10 20 L26 20" stroke="#1a56ff" stroke-width="2.8" stroke-linecap="round"/>
+        <circle cx="27" cy="26" r="6" fill="#0c1021" stroke="#1a56ff" stroke-width="2"/>
+        <circle cx="24.8" cy="26" r=".9" fill="#3b82f6"/>
+        <circle cx="27" cy="26" r=".9" fill="#3b82f6"/>
+        <circle cx="29.2" cy="26" r=".9" fill="#3b82f6"/>
+      </svg>
+    </div>
+    <nav class="sidebar-nav">
+      <a href="/dashboard" class="nav-item" data-page="dashboard">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>
+        <span class="nav-tooltip">لوحة التحكم</span>
+      </a>
+      <a href="/tokens" class="nav-item" data-page="tokens">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 2l-2 2m-7.61 7.61a5.5 5.5 0 1 1-7.778 7.778 5.5 5.5 0 0 1 7.777-7.777zm0 0L15.5 7.5m0 0l3 3L22 7l-3-3m-3.5 3.5L19 4"/></svg>
+        <span class="nav-tooltip">التوكنات</span>
+      </a>
+      <a href="/tasks" class="nav-item" data-page="tasks">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
+        <span class="nav-tooltip">المهام</span>
+      </a>
+      <a href="/logs" class="nav-item" data-page="logs">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>
+        <span class="nav-tooltip">السجلات</span>
+      </a>
+      <a href="/profile" class="nav-item" data-page="profile" title="الملف الشخصي">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+        <span class="nav-tooltip">الملف الشخصي</span>
+      </a>
+      <a href="/admin" class="nav-item admin-only" data-page="admin" title="الإدارة" style="display:none">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+        <span class="nav-tooltip">الإدارة</span>
+      </a>
+    </nav>
+    <div class="sidebar-bottom">
+      <button onclick="logout()" class="nav-item" style="background:none;border:none;cursor:pointer;width:46px;height:46px;">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
+        <span class="nav-tooltip">تسجيل الخروج</span>
+      </button>
+    </div>
+  </aside>
+  <div class="overlay" id="overlay"></div>
+
+  <div class="main">
+    <header class="topbar">
+      <button class="hamburger" id="hamburger">☰</button>
+      <a href="/dashboard" class="topbar-brand">
+        <svg viewBox="0 0 28 28" width="24" height="24" fill="none">
+          <path d="M4 22 L14 4 L24 22" stroke="#1a56ff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+          <path d="M8 16 L20 16" stroke="#1a56ff" stroke-width="2.5" stroke-linecap="round"/>
+          <circle cx="21" cy="21" r="5" fill="#0c1021" stroke="#1a56ff" stroke-width="1.8"/>
+          <circle cx="19.2" cy="21" r=".75" fill="#3b82f6"/>
+          <circle cx="21" cy="21" r=".75" fill="#3b82f6"/>
+          <circle cx="22.8" cy="21" r=".75" fill="#3b82f6"/>
+        </svg>
+        <span class="brand-name">auto<span>msg</span></span>
+      </a>
+      <div class="topbar-search">
+        <span class="search-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg></span>
+        <input type="text" placeholder="بحث...">
+      </div>
+      <div class="topbar-actions">
+        <button onclick="loadLogs()" class="topbar-icon-btn" title="تحديث">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polyline points="23 4 23 10 17 10"/><polyline points="1 20 1 14 7 14"/><path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"/></svg>
+        </button>
+        <button onclick="clearLogs()" class="topbar-icon-btn" title="مسح الكل" style="color:var(--red)">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2"/></svg>
+        </button>
+        <button class="topbar-icon-btn" id="userBtn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg></button>
+      </div>
+    </header>
+
+    <div class="content">
+      <div class="page-header">
+        <div><h1>سجل النشاطات</h1><p>تتبع كل رسالة مُرسلة وحالتها</p></div>
+      </div>
+
+      <!-- Summary badges -->
+      <div style="display:flex;gap:.75rem;flex-wrap:wrap;margin-bottom:1rem">
+        <span class="badge badge-success" style="font-size:.82rem;padding:.35rem .85rem">
+          <span class="badge-dot"></span> ناجح: <strong id="successCount">—</strong>
+        </span>
+        <span class="badge badge-failed" style="font-size:.82rem;padding:.35rem .85rem">
+          <span class="badge-dot"></span> فاشل: <strong id="failedCount">—</strong>
+        </span>
+        <span class="badge badge-unknown" style="font-size:.82rem;padding:.35rem .85rem">
+          إجمالي: <strong id="totalCount">—</strong>
+        </span>
+      </div>
+
+      <!-- Filters -->
+      <div class="filters">
+        <input type="search" id="searchInput" placeholder="بحث في القناة أو الخطأ...">
+        <select id="statusFilter" style="width:140px">
+          <option value="">كل الحالات</option>
+          <option value="success">ناجح فقط</option>
+          <option value="failed">فاشل فقط</option>
+        </select>
+      </div>
+
+      <!-- Logs Table -->
+      <div class="card">
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr><th>#</th><th>معرف المهمة</th><th>القناة</th><th>الحالة</th><th>الوقت</th><th>رسالة الخطأ</th></tr>
+            </thead>
+            <tbody id="logsList">
+              <tr><td colspan="6"><div class="empty"><div class="spinner"></div></div></td></tr>
+            </tbody>
+          </table>
+        </div>
+        <div id="logsPagination" style="padding:.75rem 1rem;border-top:1px solid var(--border);display:flex;justify-content:space-between;align-items:center;font-size:.8rem;color:var(--text3)"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script src="/js/app.js"></script>
+<script>
+let logs = [];
+let allLogs = [];
+let page = 1;
+const PAGE_SIZE = 50;
+let autoRefresh;
+
+(async () => {
+  const me = await authGuard();
+  if (!me) return;
+  document.getElementById('userBtn').title = me.username;
+  initSidebar('logs');
+  showAdminNav(me.isAdmin);
+  await loadLogs();
+  autoRefresh = setInterval(loadLogs, 30000);
+})();
+
+window.addEventListener('beforeunload', () => clearInterval(autoRefresh));
+
+document.getElementById('searchInput').oninput   = filterAndRender;
+document.getElementById('statusFilter').onchange = filterAndRender;
+
+async function loadLogs() {
+  try {
+    allLogs = await api.get('/api/logs');
+    filterAndRender();
+  } catch (e) { toasts.error('فشل تحميل السجلات'); }
+}
+
+function filterAndRender() {
+  const search = document.getElementById('searchInput').value.toLowerCase();
+  const status = document.getElementById('statusFilter').value;
+  logs = allLogs.filter(l => {
+    const matchStatus = !status || l.status === status;
+    const matchSearch = !search || (l.channelId || '').toLowerCase().includes(search) || (l.errorMessage || '').toLowerCase().includes(search);
+    return matchStatus && matchSearch;
+  });
+  document.getElementById('successCount').textContent = logs.filter(l => l.status === 'success').length;
+  document.getElementById('failedCount').textContent  = logs.filter(l => l.status !== 'success').length;
+  document.getElementById('totalCount').textContent   = logs.length;
+  page = 1;
+  renderPage();
+}
+
+function renderPage() {
+  const start = (page - 1) * PAGE_SIZE;
+  const slice = logs.slice(start, start + PAGE_SIZE);
+  const tbody = document.getElementById('logsList');
+  if (!logs.length) {
+    tbody.innerHTML = `<tr><td colspan="6"><div class="empty"><div class="empty-icon">📋</div><h3>لا توجد سجلات</h3><p>لم يتم إرسال أي رسائل بعد</p></div></td></tr>`;
+  } else {
+    tbody.innerHTML = slice.map((l, i) => `
+      <tr>
+        <td style="color:var(--text3)">${start + i + 1}</td>
+        <td class="mono">${l.taskId}</td>
+        <td class="mono">${l.channelId || '—'}</td>
+        <td><span class="badge badge-${l.status === 'success' ? 'success' : 'failed'}">
+          <span class="badge-dot"></span>${l.status === 'success' ? 'نجح' : 'فشل'}
+        </span></td>
+        <td style="color:var(--text3);white-space:nowrap">${fmtDate(l.sentAt)}</td>
+        <td style="color:var(--red);font-size:.75rem;max-width:200px;overflow:hidden;text-overflow:ellipsis">${l.errorMessage || '—'}</td>
+      </tr>`).join('');
+  }
+  const total = logs.length;
+  const pages = Math.ceil(total / PAGE_SIZE);
+  document.getElementById('logsPagination').innerHTML = `
+    <span>عرض ${Math.min(start + 1, total)}–${Math.min(start + PAGE_SIZE, total)} من ${total}</span>
+    <div style="display:flex;gap:.35rem">
+      <button onclick="changePage(-1)" class="btn btn-secondary btn-sm" ${page<=1?'disabled':''}>‹ السابق</button>
+      <button onclick="changePage(1)"  class="btn btn-secondary btn-sm" ${page>=pages?'disabled':''}>التالي ›</button>
+    </div>`;
+}
+
+function changePage(dir) {
+  const pages = Math.ceil(logs.length / PAGE_SIZE);
+  page = Math.max(1, Math.min(pages, page + dir));
+  renderPage();
+  window.scrollTo(0, 0);
+}
+
+async function clearLogs() {
+  if (!await confirm('سيتم حذف جميع السجلات نهائيًا. هل تريد المتابعة؟', 'مسح السجلات')) return;
+  try {
+    await api.delete('/api/logs');
+    toasts.success('تم مسح السجلات');
+    await loadLogs();
+  } catch (e) { toasts.error(e.message); }
+}
+</script>
+</body>
+</html>
