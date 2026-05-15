@@ -100,23 +100,17 @@ async function initDB() {
 // MIDDLEWARE
 // ======================
 
+const pgSession = require('connect-pg-simple')(session);
+
 app.set('trust proxy', 1);
-
-app.use(cors({
-  origin: true,
-  credentials: true
-}));
-
-app.use(express.json());
-app.use(express.urlencoded({ extended: true }));
 
 app.use(session({
   store: new pgSession({
     pool: db,
-    tableName: 'user_sessions'
+    createTableIfMissing: true
   }),
 
-  secret: process.env.SESSION_SECRET || 'change-this-secret',
+  secret: process.env.SESSION_SECRET,
 
   resave: false,
   saveUninitialized: false,
@@ -125,7 +119,7 @@ app.use(session({
     secure: true,
     httpOnly: true,
     sameSite: 'lax',
-    maxAge: 7 * 24 * 60 * 60 * 1000
+    maxAge: 1000 * 60 * 60 * 24 * 7
   }
 }));
 
