@@ -1,4 +1,3 @@
-
 require('dotenv').config();
 
 const express = require('express');
@@ -100,6 +99,8 @@ async function initDB() {
 // MIDDLEWARE
 // ======================
 
+app.set('trust proxy', 1);
+
 app.use(cors({
   origin: true,
   credentials: true
@@ -112,9 +113,11 @@ app.use(session({
   secret: process.env.SESSION_SECRET || 'change-this-secret',
   resave: false,
   saveUninitialized: false,
+  proxy: true,
   cookie: {
+    secure: true,
     httpOnly: true,
-    sameSite: 'lax',
+    sameSite: 'none',
     maxAge: 7 * 24 * 60 * 60 * 1000
   }
 }));
@@ -179,6 +182,20 @@ app.get('/profile', requireAuth, (req, res) => {
 
 app.get('/admin', requireAuth, requireAdmin, (req, res) => {
   res.sendFile(path.join(__dirname, 'public', 'admin.html'));
+});
+
+// ======================
+// ERROR HANDLER
+// ======================
+
+app.use((err, req, res, next) => {
+  console.error(err);
+
+  res.status(500).json({
+    error: true,
+    message: err.message,
+    stack: err.stack
+  });
 });
 
 // ======================
