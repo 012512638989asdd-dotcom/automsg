@@ -1,20 +1,32 @@
+```js
 require('dotenv').config();
+
 const express = require('express');
 const session = require('express-session');
 const cors = require('cors');
 const path = require('path');
 const { Pool } = require('pg');
-const { startScheduler } = require('./scheduler');
 
 const app = express();
-const PORT = process.env.PORT || 3000;
+
+// ======================
+// DATABASE
+// ======================
 
 if (!process.env.DATABASE_URL) {
-  console.error('[ERROR] DATABASE_URL is required in .env file');
-  process.exit(1);
+  console.error('[ERROR] DATABASE_URL is missing');
 }
 
-const db = new Pool({ connectionString: process.env.DATABASE_URL });
+const db = new Pool({
+  connectionString: process.env.DATABASE_URL,
+  ssl: {
+    rejectUnauthorized: false
+  }
+});
+
+// ======================
+// INIT DATABASE
+// ======================
 
 async function initDB() {
   await db.query(`
@@ -26,6 +38,7 @@ async function initDB() {
       avatar_path TEXT,
       created_at TIMESTAMPTZ DEFAULT NOW()
     );
+
     CREATE TABLE IF NOT EXISTS tokens (
       id SERIAL PRIMARY KEY,
       user_id INTEGER NOT NULL REFERENCES users(id) ON DELETE CASCADE,
@@ -34,6 +47,7 @@ async function initDB() {
       status VARCHAR(20) DEFAULT 'unknown',
       created_at TIMESTAMPTZ DEFAULT NOW()
     );
+
     CREATE TABLE IF NOT EXISTS tasks (
       id SERIAL PRIMARY KEY,
       user_id INTEGER NOT NULL REFERENCES users(id) ON DELETE CASCADE,
@@ -48,6 +62,7 @@ async function initDB() {
       next_run_at TIMESTAMPTZ,
       created_at TIMESTAMPTZ DEFAULT NOW()
     );
+
     CREATE TABLE IF NOT EXISTS logs (
       id SERIAL PRIMARY KEY,
       task_id INTEGER NOT NULL REFERENCES tasks(id) ON DELETE CASCADE,
@@ -56,12 +71,14 @@ async function initDB() {
       error_message TEXT,
       sent_at TIMESTAMPTZ DEFAULT NOW()
     );
+
     CREATE TABLE IF NOT EXISTS notifications (
       id SERIAL PRIMARY KEY,
       sender_id INTEGER REFERENCES users(id) ON DELETE SET NULL,
       message TEXT NOT NULL,
       created_at TIMESTAMPTZ DEFAULT NOW()
     );
+
     CREATE TABLE IF NOT EXISTS user_notifications (
       id SERIAL PRIMARY KEY,
       notification_id INTEGER NOT NULL REFERENCES notifications(id) ON DELETE CASCADE,
@@ -70,26 +87,48 @@ async function initDB() {
       created_at TIMESTAMPTZ DEFAULT NOW()
     );
   `);
-  // Add columns if missing (safe for existing DBs)
+
   await db.query(`
     ALTER TABLE users ADD COLUMN IF NOT EXISTS is_admin BOOLEAN DEFAULT false;
     ALTER TABLE users ADD COLUMN IF NOT EXISTS avatar_path TEXT;
-  `).catch(() => {});
-  console.log('[DB] Tables ready');
+  `);
+
+  console.log('[DB] Tables Ready');
 }
 
-app.use(cors({ origin: true, credentials: true }));
+// ======================
+// MIDDLEWARE
+// ======================
+
+app.use(cors({
+  origin: true,
+  credentials: true
+}));
+
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
+
 app.use(session({
-  secret: process.env.SESSION_SECRET || 'alwinsh-secret-change-me',
+  secret: process.env.SESSION_SECRET || 'change-this-secret',
   resave: false,
   saveUninitialized: false,
-  cookie: { httpOnly: true, maxAge: 7 * 24 * 60 * 60 * 1000, sameSite: 'lax' }
+  cookie: {
+    httpOnly: true,
+    sameSite: 'lax',
+    maxAge: 7 * 24 * 60 * 60 * 1000
+  }
 }));
+
+// ======================
+// STATIC FILES
+// ======================
 
 app.use(express.static(path.join(__dirname, 'public')));
 app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
+
+// ======================
+// ROUTES
+// ======================
 
 app.use(require('./routes/auth')(db));
 app.use(require('./routes/tokens')(db));
@@ -102,22 +141,61 @@ app.use(require('./routes/profile')(db));
 
 const { requireAuth, requireAdmin } = require('./middleware/auth');
 
+// ======================
+// PAGES
+// ======================
+
 app.get('/', (req, res) => {
-  if (req.session?.userId) return res.redirect('/dashboard');
+  if (req.session?.userId) {
+    return res.redirect('/dashboard');
+  }
+
   res.sendFile(path.join(__dirname, 'public', 'index.html'));
 });
-app.get('/register', (req, res) => res.sendFile(path.join(__dirname, 'public', 'register.html')));
-app.get('/dashboard', requireAuth, (req, res) => res.sendFile(path.join(__dirname, 'public', 'dashboard.html')));
-app.get('/tokens',   requireAuth, (req, res) => res.sendFile(path.join(__dirname, 'public', 'tokens.html')));
-app.get('/tasks',    requireAuth, (req, res) => res.sendFile(path.join(__dirname, 'public', 'tasks.html')));
-app.get('/logs',     requireAuth, (req, res) => res.sendFile(path.join(__dirname, 'public', 'logs.html')));
-app.get('/profile',  requireAuth, (req, res) => res.sendFile(path.join(__dirname, 'public', 'profile.html')));
-app.get('/admin',    requireAuth, requireAdmin, (req, res) => res.sendFile(path.join(__dirname, 'public', 'admin.html')));
 
-initDB().then(() => {
-  startScheduler(db);
-  app.listen(PORT, () => console.log(`[Server] Running → http://localhost:${PORT}`));
-}).catch(err => {
-  console.error('[DB] Connection failed:', err.message);
-  process.exit(1);
+app.get('/register', (req, res) => {
+  res.sendFile(path.join(__dirname, 'public', 'register.html'));
 });
+
+app.get('/dashboard', requireAuth, (req, res) => {
+  res.sendFile(path.join(__dirname, 'public', 'dashboard.html'));
+});
+
+app.get('/tokens', requireAuth, (req, res) => {
+  res.sendFile(path.join(__dirname, 'public', 'tokens.html'));
+});
+
+app.get('/tasks', requireAuth, (req, res) => {
+  res.sendFile(path.join(__dirname, 'public', 'tasks.html'));
+});
+
+app.get('/logs', requireAuth, (req, res) => {
+  res.sendFile(path.join(__dirname, 'public', 'logs.html'));
+});
+
+app.get('/profile', requireAuth, (req, res) => {
+  res.sendFile(path.join(__dirname, 'public', 'profile.html'));
+});
+
+app.get('/admin', requireAuth, requireAdmin, (req, res) => {
+  res.sendFile(path.join(__dirname, 'public', 'admin.html'));
+});
+
+// ======================
+// START DB
+// ======================
+
+initDB()
+  .then(() => {
+    console.log('[DB] Connected');
+  })
+  .catch((err) => {
+    console.error('[DB ERROR]', err);
+  });
+
+// ======================
+// EXPORT APP FOR VERCEL
+// ======================
+
+module.exports = app;
+```
